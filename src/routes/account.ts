@@ -3,6 +3,6 @@ import accountController from '../controllers/account';
 
 const router = Router();
 
-router.post('/', accountController.getTransactions);
+router.post('/:personId', accountController.createAccount);
 
 export default router;
