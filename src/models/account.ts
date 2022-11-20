@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 const { Schema, Types } = mongoose;
 
 export interface Account {
-  personId: ObjectId;
+  personId?: ObjectId;
   balance?: number;
   dailyWithdrawalLimit?: number;
   activeFlag?: boolean;

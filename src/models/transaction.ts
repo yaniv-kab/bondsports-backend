@@ -4,9 +4,8 @@ import mongoose from 'mongoose';
 const { Schema, Types } = mongoose;
 
 export interface Transaction {
-  accountId: ObjectId;
+  accountId?: ObjectId;
   value: number;
-  transactionDate: Date;
 }
 
 export type TransactionWithId = WithId<Transaction>;
@@ -20,10 +19,6 @@ const TransactionSchema = new Schema<Transaction>(
     },
     value: {
       type: Number,
-      required: true,
-    },
-    transactionDate: {
-      type: Date,
       required: true,
     },
   },
