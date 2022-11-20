@@ -15,7 +15,7 @@ const TransactionSchema = new Schema<Transaction>(
   {
     accountId: {
       type: Types.ObjectId,
-      ref: 'account',
+      ref: 'accounts',
       required: true,
     },
     value: {
@@ -33,4 +33,4 @@ const TransactionSchema = new Schema<Transaction>(
 );
 
 
-export const Transactions = mongoose.model<Transaction>('transaction', TransactionSchema);
+export const Transactions = mongoose.model<Transaction>('transactions', TransactionSchema);
