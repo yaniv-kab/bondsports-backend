@@ -1,6 +1,8 @@
 import { WithId } from 'mongodb';
 import mongoose from 'mongoose';
 
+const { Schema } = mongoose;
+
 export interface Person {
   name: string;
   document: string;
@@ -8,7 +10,7 @@ export interface Person {
 }
 export type PersonWithId = WithId<Person>;
 
-const personSchema = new mongoose.Schema<Person>(
+const PersonSchema = new Schema<Person>(
   {
     name: {
       type: String,
@@ -25,8 +27,9 @@ const personSchema = new mongoose.Schema<Person>(
   },
   {
     timestamps: true,
+    collection: 'persons',
   },
 );
 
 
-export const Persons = mongoose.model<Person>('person', personSchema);
+export const Persons = mongoose.model<Person>('persons', PersonSchema);
