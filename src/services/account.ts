@@ -32,3 +32,9 @@ export const getBalance = async (accountId: mongoose.ObjectId) => {
   if (!account) throw new Error('Invalid id sent, no account found!');
   return account.balance;
 };
+export const blockAccount = async (accountId: mongoose.ObjectId) => {
+  const account = await Accounts.findById(accountId);
+  if (!account) throw new Error('Invalid id sent, no account found!');
+  account.activeFlag = false;
+  await Accounts.findByIdAndUpdate(accountId, account);
+};
