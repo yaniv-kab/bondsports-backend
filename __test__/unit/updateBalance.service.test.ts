@@ -37,7 +37,6 @@ describe('Unit Test update account balance', () => {
     try {
       await updateAccountBalance(firstAccount._id, withdrawValue, 'withdraw');
     } catch (error: any) {
-      console.log(error);
       expect(error.message).toEqual(`Sorry, you don't have enough in your balance: ${balance}`);
       return;
     }
