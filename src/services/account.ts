@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { TypeEnum } from '../interfaces/CreateTransactionType';
 import { Account, Accounts } from '../models/account';
 
 export const createAccount = async (personId: mongoose.ObjectId, accountBody: Account) => {
@@ -10,10 +11,18 @@ export const createAccount = async (personId: mongoose.ObjectId, accountBody: Ac
   return account;
 };
 
-export const updateAccountBalance = async (accountId: mongoose.ObjectId, depositValue: number) => {
+export const updateAccountBalance = async (accountId: mongoose.ObjectId, value: number, type: TypeEnum) => {
   const account = await Accounts.findById(accountId);
   if (!account) throw new Error('Invalid id sent, no account found!');
-  account.balance = (account.balance || 0) + depositValue;
+
+  const { dailyWithdrawalLimit, balance } = account;
+  if (type === 'deposit') {
+    account.balance = (balance || 0) + value;
+  } else {
+    if (value > (dailyWithdrawalLimit || 0)) throw new Error(`Sorry, you can't withdraw more than ${dailyWithdrawalLimit}`);
+    if (value > (balance || 0)) throw new Error(`Sorry, you don't have enough in your balance: ${balance}`);
+    account.balance = (balance || 0) - value;
+  }
 
   await Accounts.findByIdAndUpdate(accountId, account);
 
