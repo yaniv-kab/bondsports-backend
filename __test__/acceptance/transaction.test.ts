@@ -6,7 +6,7 @@ import { Persons } from '../../src/models/person';
 import { Transaction } from '../../src/models/transaction';
 
 
-describe('POST /api/v1/transactions', () => {
+describe('POST /api/v1/transactions/:accountId', () => {
   beforeAll(async () => {
     const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/bondsports';
     mongoose.connect(MONGO_URI);
@@ -74,5 +74,43 @@ describe('POST /api/v1/transactions', () => {
     const accounts = await Accounts.find({});
     const response = await request(app).post(`/api/v1/transactions/${accounts[0]._id}`).set('Accept', 'application/json').query({ type: 'withdraw' }).send({});
     expect(response.statusCode).toEqual(400);
+  });
+});
+
+describe('GET /api/v1/transactions/:accountId', () => {
+  beforeAll(async () => {
+    const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/bondsports';
+    mongoose.connect(MONGO_URI);
+
+
+    const accountsCount = await Accounts.count();
+    if (accountsCount === 0) {
+      //* create account for tests if there is no accounts
+      const persons = await Persons.find();
+      const firstPersonId = persons[0]._id;
+      const testAccount = {
+        balance: 10000,
+        personId: firstPersonId,
+      };
+      await Accounts.create(testAccount);
+    }
+  });
+
+  it('Should get all transactions for specific account from the first day of the current date', async () => {
+    const accounts = await Accounts.find({});
+    const firstAccount = accounts[0];
+    const response = await request(app).get(`/api/v1/transactions/${firstAccount._id}`).set('Accept', 'application/json');
+    expect(response.statusCode).toEqual(200);
+    expect(Array.isArray(response.body)).toBe(true);
+  });
+
+  it('Should get all transactions for specific account by specific period', async () => {
+    const accounts = await Accounts.find({});
+    const fromDate = new Date('2022-11-19');
+    const toDate = new Date('2022-11-21');
+    const firstAccount = accounts[0];
+    const response = await request(app).get(`/api/v1/transactions/${firstAccount._id}`).set('Accept', 'application/json').query({ fromDate, toDate });
+    expect(response.statusCode).toEqual(200);
+    expect(Array.isArray(response.body)).toBe(true);
   });
 });
