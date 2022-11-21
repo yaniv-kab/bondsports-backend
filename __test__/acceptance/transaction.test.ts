@@ -24,7 +24,6 @@ describe('POST /api/v1/transactions', () => {
       await Accounts.create(testAccount);
     }
   });
-
   it('should return the deposit value for the specific account', async () => {
     const accounts = await Accounts.find({});
 
@@ -41,7 +40,6 @@ describe('POST /api/v1/transactions', () => {
     const response = await request(app).post(`/api/v1/transactions/${accounts[0]._id}`).set('Accept', 'application/json').query({ type: 'deposit' }).send({});
     expect(response.statusCode).toEqual(400);
   });
-
   it('should return the withdraw value for the specific account', async () => {
     const accounts = await Accounts.find({});
     const firstAccount = accounts[0];
