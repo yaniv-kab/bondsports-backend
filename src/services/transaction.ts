@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 import { TypeEnum } from '../interfaces/CreateTransactionType';
 import { Transactions } from '../models/transaction';
 
-export const getTransactions = async () => {
-  const response = await Transactions.find();
+export const getTransactions = async (accountId: mongoose.ObjectId, fromDate: string, toDate: string) => {
+  const response = await Transactions.find({ accountId, createdAt: { $gte: fromDate, $lt: toDate } });
   return response;
 };
 
