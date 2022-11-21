@@ -25,20 +25,56 @@ describe('POST /api/v1/transactions', () => {
     }
   });
 
-  it('should return the created transactions for the specific account', async () => {
+  it('should return the deposit value for the specific account', async () => {
     const accounts = await Accounts.find({});
 
-    const transactionExample: Transaction = {
+    const depositExample: Transaction = {
       value: 10000,
     };
-    const response = await request(app).post(`/api/v1/transactions/${accounts[0]._id}`).set('Accept', 'application/json').send(transactionExample);
+    const response = await request(app).post(`/api/v1/transactions/${accounts[0]._id}`).set('Accept', 'application/json').query({ type: 'deposit' }).send(depositExample);
     expect(response.statusCode).toEqual(200);
     expect(response.body).toHaveProperty('_id');
     expect(response.body).toHaveProperty('value');
   });
-  it('should failed create account', async () => {
+  it('should failed deposit to account', async () => {
     const accounts = await Accounts.find({});
-    const response = await request(app).post(`/api/v1/transactions/${accounts[0]._id}`).set('Accept', 'application/json').send({});
+    const response = await request(app).post(`/api/v1/transactions/${accounts[0]._id}`).set('Accept', 'application/json').query({ type: 'deposit' }).send({});
+    expect(response.statusCode).toEqual(400);
+  });
+
+  it('should return the withdraw value for the specific account', async () => {
+    const accounts = await Accounts.find({});
+    const firstAccount = accounts[0];
+    const { dailyWithdrawalLimit = 0, balance = 0 } = firstAccount;
+    const withdrawExample: Transaction = {
+      value: dailyWithdrawalLimit * 0.5,
+    };
+    const response = await request(app).post(`/api/v1/transactions/${firstAccount._id}`).set('Accept', 'application/json').query({ type: 'withdraw' }).send(withdrawExample);
+    if (balance > withdrawExample.value) {
+      expect(response.statusCode).toEqual(200);
+      expect(response.body).toHaveProperty('_id');
+      expect(response.body).toHaveProperty('value');
+    } else {
+      expect(response.statusCode).toEqual(400);
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toBe(`Sorry, you don't have enough in your balance: ${balance}`);
+    }
+  });
+  it('should return error from withdraw because try to withdraw more than limit', async () => {
+    const accounts = await Accounts.find({});
+    const firstAccount = accounts[0];
+    const { dailyWithdrawalLimit = 0 } = firstAccount;
+    const withdrawExample: Transaction = {
+      value: dailyWithdrawalLimit * 1.5,
+    };
+    const response = await request(app).post(`/api/v1/transactions/${firstAccount._id}`).set('Accept', 'application/json').query({ type: 'withdraw' }).send(withdrawExample);
+    expect(response.statusCode).toEqual(400);
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toBe(`Sorry, you can't withdraw more than ${dailyWithdrawalLimit}`);
+  });
+  it('should failed withdraw to account', async () => {
+    const accounts = await Accounts.find({});
+    const response = await request(app).post(`/api/v1/transactions/${accounts[0]._id}`).set('Accept', 'application/json').query({ type: 'withdraw' }).send({});
     expect(response.statusCode).toEqual(400);
   });
 });

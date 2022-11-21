@@ -5,7 +5,7 @@ import { Account } from '../../src/models/account';
 import { Persons } from '../../src/models/person';
 
 describe('POST /api/v1/accounts', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/bondsports';
     mongoose.connect(MONGO_URI);
 
