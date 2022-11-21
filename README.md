@@ -1,10 +1,4 @@
-# Express API Starter with Typescript
-
-How to use this template:
-
-```sh
-npx create-express-api --typescript --directory my-api-name
-```
+# BondSports Assignment backend
 
 Includes API Server utilities:
 
@@ -34,12 +28,25 @@ Development utilities:
 * [supertest](https://www.npmjs.com/package/supertest)
   * HTTP assertions made easy via superagent.
 
+## Prerequisites  
+ to run this server you will need to have on your computer: 
+  - node.js 
+  - mongoDB
+  
 ## Setup
 
 ```
 npm install
 ```
+## Development
 
+- copy the .env.example to .env file
+```
+cp .env.example .env
+```
+```
+npm run dev
+```
 ## Lint
 
 ```
@@ -50,10 +57,4 @@ npm run lint
 
 ```
 npm run test
-```
-
-## Development
-
-```
-npm run dev
 ```
