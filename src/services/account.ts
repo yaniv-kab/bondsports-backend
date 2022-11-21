@@ -25,4 +25,10 @@ export const updateAccountBalance = async (accountId: mongoose.ObjectId, value: 
   }
 
   await Accounts.findByIdAndUpdate(accountId, account);
+
+};
+export const getBalance = async (accountId: mongoose.ObjectId) => {
+  const account = await Accounts.findById(accountId);
+  if (!account) throw new Error('Invalid id sent, no account found!');
+  return account.balance;
 };
