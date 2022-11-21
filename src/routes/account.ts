@@ -5,6 +5,7 @@ import accountExists from '../middlewares/accountExists';
 
 const router = Router();
 
+router.get('/', accountController.getAccounts);
 router.post('/:personId', accountController.createAccount);
 router.get('/:accountId/balance', accountExists, accountBlocked, accountController.getBalance);
 router.post('/:accountId/block', accountExists, accountBlocked, accountController.blockAccount);

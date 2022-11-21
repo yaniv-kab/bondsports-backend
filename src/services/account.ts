@@ -2,6 +2,10 @@ import mongoose from 'mongoose';
 import { TypeEnum } from '../interfaces/CreateTransactionType';
 import { Account, Accounts } from '../models/account';
 
+export const getAccounts = async () => {
+  const accounts = await Accounts.find();
+  return accounts;
+};
 export const createAccount = async (personId: mongoose.ObjectId, accountBody: Account) => {
   const AccountToCreate = {
     ...accountBody,

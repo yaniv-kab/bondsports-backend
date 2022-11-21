@@ -7,6 +7,10 @@ import * as accountService from '../services/account';
 import { asyncHandler } from '../utils/asyncHandler';
 import MessageResponse from '../interfaces/MessageResponse';
 
+const getAccounts = async (req: Request, res: Response<Account[]>) => {
+  const accounts = await accountService.getAccounts();
+  res.json(accounts);
+};
 const createAccount = async (req: Request<PersonId, AccountWithId, Account>, res: Response<AccountWithId>) => {
   const personId: mongoose.ObjectId = req.params.personId;
   const accountBody = req.body;
@@ -25,6 +29,7 @@ const blockAccount = async (req: Request<AccountId>, res: Response<MessageRespon
 };
 
 export default {
+  getAccounts: asyncHandler(getAccounts),
   createAccount: asyncHandler(createAccount),
   getBalance: asyncHandler(getBalance),
   blockAccount: asyncHandler(blockAccount),
